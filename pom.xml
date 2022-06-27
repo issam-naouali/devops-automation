@@ -37,13 +37,13 @@
 			</plugin>
 			
      		 	<plugin>
-        <		groupId>org.sonarsource.sonar-packaging-maven-plugin</groupId>
-        		<artifactId>sonar-packaging-maven-plugin</artifactId>
-        		<extensions>true</extensions>
-        <configuration>
-          		<pluginClass>org.sonarqube.plugins.example.ExamplePlugin</pluginClass>
+        			<groupId>org.sonarsource.sonar-packaging-maven-plugin</groupId>
+        			<artifactId>sonar-packaging-maven-plugin</artifactId>
+        			<extensions>true</extensions>
+        	<configuration>
+          			<pluginClass>org.sonarqube.plugins.example.ExamplePlugin</pluginClass>
         </configuration>
-      </plugin>
+      
     </plugins>
 		</plugins>
 		<finalName>devops-integration</finalName>
