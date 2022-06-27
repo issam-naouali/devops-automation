@@ -35,7 +35,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			plugins>
+			
      		 	<plugin>
         <		groupId>org.sonarsource.sonar-packaging-maven-plugin</groupId>
         		<artifactId>sonar-packaging-maven-plugin</artifactId>
