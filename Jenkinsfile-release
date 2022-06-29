@@ -1,0 +1,71 @@
+pipeline {
+    agent any
+    
+      environment {
+        registry = "403068655846.dkr.ecr.eu-central-1.amazonaws.com/docker-repo"
+    }
+
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "M3"
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                // Get some code from a GitHub repository
+                git 'https://github.com/issam-naouali/devops-automation.git'
+
+                // Run Maven on a Unix agent.
+                sh "mvn -Dmaven.test.failure.ignore=true clean package"
+
+                // To run Maven on a Windows agent, use
+                // bat "mvn -Dmaven.test.failure.ignore=true clean package"
+            }
+
+            post {
+                // If Maven was able to run the tests, even if some of the test
+                // failed, record the test results and archive the jar file.
+                success {
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                    archiveArtifacts 'target/*.jar'
+                }
+            }
+        }
+         stage('SonarQube analysis') {
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                   
+               sh " mvn sonar:sonar -Dsonar.host.url=http://3.121.98.212:9000"
+               
+            }
+        }
+         }
+          stage('Building image') {
+      steps{
+        script {
+          dockerImage = docker.build registry 
+        }
+      }
+    }
+     
+    stage('Pushing to ECR') {
+     steps{  
+         script {
+                sh 'aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 403068655846.dkr.ecr.eu-central-1.amazonaws.com'
+                sh 'docker push 403068655846.dkr.ecr.eu-central-1.amazonaws.com/docker-repo:latest'
+         }
+        }
+      }
+       stage('K8S Deploy') {
+        steps{   
+            script {
+                withKubeConfig([credentialsId: 'K8S', serverUrl: '']) {
+                sh ('kubectl apply -f  deploymentservice.yaml')
+                }
+            }
+        }
+       }
+      
+    }
+}
