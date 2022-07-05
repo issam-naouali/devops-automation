@@ -29,11 +29,9 @@ metadata: # Metadata of the resource kind we are creating
 spec:
   
   ports:
-    - protocol: "TCP"
-      nodePort: 31080    
+    - protocol: "TCP"   
       port: 8080 # The port that the service is running on in the cluster
       targetPort: 8080 # The port exposed by the service
-  type: NodePort # type of the service.
   type: LoadBalancer 
   selector:
     app: spring-boot-k8s
